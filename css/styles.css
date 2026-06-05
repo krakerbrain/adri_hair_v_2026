@@ -1,0 +1,883 @@
+/* styles.css */
+
+:root {
+  /* Color Palette */
+  --primary-color: #ff00a0;
+  /* Magenta/Pink */
+  --primary-color-hover: #d10083;
+  /* Darker Pink */
+  --secondary-color: #262a2b;
+  /* Dark slate */
+  --bg-color: #ffffff;
+  /* White background */
+  --text-color: #333333;
+  --text-light: #777777;
+  --white: #ffffff;
+  --black: #000000;
+
+  /* Fonts */
+  --font-primary: 'Montserrat', sans-serif;
+  --font-secondary: 'Playfair Display', serif;
+
+  /* Layout */
+  --container-width: 1200px;
+  --transition-speed: 0.3s;
+}
+
+/* Reset & Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--transition-speed);
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-padding {
+  padding: 80px 0;
+}
+
+.section-title {
+  font-family: var(--font-secondary);
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--secondary-color);
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
+  margin: 15px auto 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: var(--primary-color-hover);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+/* Header & Navbar */
+.top-bar {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  padding: 10px 0;
+  font-size: 0.85rem;
+  position: relative;
+  z-index: 1001;
+}
+
+.top-bar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar-info {
+  display: flex;
+  gap: 20px;
+}
+
+.top-bar-info span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.top-bar-info span i {
+  color: var(--primary-color);
+}
+
+.top-bar-social a {
+  color: var(--primary-color);
+  margin-left: 15px;
+  font-size: 1rem;
+}
+
+.top-bar-social a:hover {
+  color: var(--white);
+}
+
+.navbar {
+  background-color: transparent;
+  padding: 15px 0;
+  position: absolute;
+  width: 100%;
+  top: 41px;
+  /* Below top-bar roughly */
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+  position: fixed;
+  top: 0;
+  background-color: var(--secondary-color);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 10px 0;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  height: 90px;
+  width: auto;
+  transition: height 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.navbar.scrolled .logo img {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(0 0 0 transparent);
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-links a {
+  font-weight: 500;
+  color: var(--white);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary-color);
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  color: var(--white);
+  cursor: pointer;
+}
+
+/* Hero Section (Slider) */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background-color: var(--secondary-color);
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  background-size: cover;
+  background-position: center;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+/* Overlay for better text readability */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--white);
+  padding: 0 20px;
+}
+
+.hero-content h1 {
+  font-family: var(--font-secondary);
+  font-size: 4rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease forwards;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin-bottom: 40px;
+  animation: fadeInUp 1s ease 0.3s forwards;
+  opacity: 0;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  animation: fadeInUp 1s ease 0.6s forwards;
+  opacity: 0;
+}
+
+/* Services Section */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.service-card {
+  perspective: 1000px;
+  height: 580px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.service-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+.service-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.service-card-front,
+.service-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Front Styling */
+.service-img {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.service-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  transition: transform 0.5s ease;
+  background-color: #1a1a1a;
+}
+
+.service-card:hover .service-img img {
+  transform: scale(1.05);
+}
+
+/* Gradient overlay at bottom of image */
+.service-img::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(38, 42, 43, 0.95) 0%, rgba(38, 42, 43, 0) 100%);
+  border-radius: 0 0 8px 8px;
+  pointer-events: none;
+}
+
+/* Info overlay on top of image */
+.service-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.service-info h3 {
+  font-family: var(--font-secondary);
+  font-size: 1.6rem;
+  color: var(--white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+/* White outlined button inside card overlay */
+.service-info .btn-outline {
+  border-color: var(--white);
+  color: var(--white);
+  font-size: 0.85rem;
+  padding: 8px 22px;
+}
+
+.service-info .btn-outline:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Back Styling */
+.service-card-back {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  transform: rotateY(180deg);
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.service-card-back h3 {
+  color: var(--primary-color);
+  font-family: var(--font-secondary);
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.service-card-back p {
+  margin-bottom: 25px;
+  font-size: 0.95rem;
+  color: #eeeeee;
+}
+
+/* Bio Section */
+.bio-section {
+  background-color: var(--secondary-color);
+  color: var(--white);
+}
+
+.bio-container {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.bio-image {
+  flex: 1;
+  position: relative;
+}
+
+.bio-image img {
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.bio-content {
+  flex: 1;
+}
+
+.bio-content h2 {
+  font-family: var(--font-secondary);
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.bio-content p {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: #cccccc;
+}
+
+/* CTA Section */
+.cta-section {
+  background-color: var(--secondary-color);
+  color: var(--secondary-color);
+  text-align: center;
+  padding: 250px 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Dark gradient at top (matching bio section) and bottom (matching footer) */
+  background:
+    linear-gradient(to bottom, rgba(38, 42, 43, 1) 0%, rgba(38, 42, 43, 0) 25%, rgba(26, 26, 26, 0) 75%, rgba(26, 26, 26, 1) 100%),
+    url('../img/3267002.jpg') center/cover no-repeat;
+  z-index: 1;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.cta-content h2 {
+  font-family: var(--font-secondary);
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+
+/* Footer */
+.footer {
+  background-color: #1a1a1a;
+  color: #ccc;
+  padding: 60px 0 20px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-col h3 {
+  color: var(--white);
+  font-family: var(--font-secondary);
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer-col h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 30px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.footer-col p,
+.footer-col li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--white);
+  transition: background-color var(--transition-speed);
+}
+
+.footer-social a:hover {
+  background-color: var(--primary-color);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+
+  .bio-container {
+    flex-direction: column;
+  }
+
+  .bio-image {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Scrollable Top Bar for Mobile */
+  .top-bar .container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 20px;
+    padding-bottom: 5px;
+    justify-content: flex-start;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .top-bar .container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-bar-info {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 15px;
+    white-space: nowrap;
+  }
+
+  .top-bar-social {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Hamburger button — transparent, no background */
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 6px;
+  }
+
+  /* Nav dropdown */
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--secondary-color);
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-150%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    z-index: 999;
+  }
+
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  /* Services — 1 column, dark background on image */
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card {
+    height: 520px;
+  }
+
+  /* Fix: ensure dark background shows on mobile too */
+  .service-img img {
+    background-color: #1a1a1a;
+  }
+
+  /* Bio — prevent image from stretching */
+  .bio-image {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  .bio-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 8px;
+  }
+
+  /* CTA — reduce padding so image is shorter, text always in center white area */
+  .cta-section {
+    padding: 280px 0;
+  }
+
+  /* Make CTA gradient stronger so text is always readable */
+  .cta-section::before {
+    background:
+      linear-gradient(to bottom, rgba(38, 42, 43, 1) 0%, rgba(38, 42, 43, 0) 30%, rgba(26, 26, 26, 0) 70%, rgba(26, 26, 26, 1) 100%),
+      url('../img/3267002.jpg') center/cover no-repeat;
+  }
+
+  .cta-content h2 {
+    font-size: 2rem;
+    /* Ensure text is dark and readable over the white center of the image */
+    color: var(--secondary-color);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* ===========================
+   WhatsApp Floating Button
+   =========================== */
+.whatsapp-container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* The round green button */
+.whatsapp-float-btn {
+  width: 60px;
+  height: 60px;
+  background-color: #25d366;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--white);
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.whatsapp-float-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.7);
+}
+
+/* Pulse ring animation */
+.whatsapp-float-btn::before {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.3);
+  animation: waPulse 2s infinite;
+}
+
+@keyframes waPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Popup card */
+.whatsapp-popup {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  /* Hidden by default */
+  opacity: 0;
+  transform: translateY(12px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform-origin: bottom right;
+  min-width: 240px;
+}
+
+.whatsapp-popup.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* Popup inner link */
+.whatsapp-popup-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  text-decoration: none;
+  color: var(--secondary-color);
+  transition: background 0.2s;
+}
+
+.whatsapp-popup-content:hover {
+  background: #f0fdf4;
+}
+
+/* Avatar image */
+.whatsapp-popup-content img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 2px solid #25d366;
+  flex-shrink: 0;
+}
+
+/* Text block */
+.whatsapp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.whatsapp-text strong {
+  font-size: 0.95rem;
+  color: var(--secondary-color);
+}
+
+.whatsapp-text span {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+/* Little triangle arrow pointing to button */
+.whatsapp-popup::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 22px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--white);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.08));
+}
