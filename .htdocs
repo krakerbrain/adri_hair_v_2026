@@ -1,0 +1,3 @@
+# Redirigir todo lo que venga de /blog/ hacia la página principal
+RedirectMatch 301 ^/blog/(.*) https://adrihairstyle.cl/
+RedirectMatch 301 ^/cursos/(.*) https://adrihairstyle.cl/
