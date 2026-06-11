@@ -78,9 +78,24 @@ document.addEventListener('DOMContentLoaded', () => {
         navItems.forEach(a => {
             a.classList.remove('active');
             const href = a.getAttribute('href');
-            // If the href is exactly "#id" and it matches current, add active. 
-            // Also if current is empty and href is "#" (Inicio), add active.
-            if (href === '#' + current || (current === '' && href === '#')) {
+            if (!href) return;
+            
+            // Extract the hash component (e.g. "blog" or "")
+            const hash = href.includes('#') ? href.split('#')[1] : '';
+            
+            let isCurrent = (hash === current && current !== '');
+            
+            // If we are at the top and the hash is empty, or the link is just "#"
+            if (current === '' && (href === '#' || href === 'index.html#')) {
+                isCurrent = true;
+            }
+            
+            // If we are reading a post (blog-reader-section active) and the link is the blog
+            if (current === 'blog-reader-section' && hash === 'blog') {
+                isCurrent = true;
+            }
+            
+            if (isCurrent) {
                 a.classList.add('active');
             }
         });
@@ -129,6 +144,113 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!e.target.closest('.whatsapp-container')) {
                 waPopup.classList.remove('open');
             }
+        });
+    }
+
+    // --- Blog Logic ---
+    const blogGrid = document.getElementById('blog-grid');
+
+    if (blogGrid) {
+        // Fetch posts.json
+        fetch('posts.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el archivo posts.json');
+                }
+                return response.json();
+            })
+            .then(posts => {
+                renderBlogCards(posts);
+            })
+            .catch(error => {
+                console.error('Error cargando blog posts:', error);
+                blogGrid.innerHTML = `
+                    <div class="blog-loading">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: #ff00a0;"></i>
+                        <p>Lo sentimos, no pudimos cargar las entradas del blog en este momento.</p>
+                    </div>
+                `;
+            });
+    }
+
+    function renderBlogCards(posts) {
+        blogGrid.innerHTML = '';
+        if (posts.length === 0) {
+            blogGrid.innerHTML = `
+                <div class="blog-loading">
+                    <p>No hay publicaciones disponibles en este momento.</p>
+                </div>
+            `;
+            return;
+        }
+
+        posts.forEach(post => {
+            // Create direct SEO-friendly anchor wrapper
+            const card = document.createElement('a');
+            card.className = 'blog-card reveal';
+            card.href = `post.php?id=${encodeURIComponent(post.id)}`;
+            card.dataset.id = post.id;
+            
+            // Format date: "2026-06-10 22:43:45" -> "10 Jun, 2026"
+            const rawDate = new Date(post.fecha_publicacion.replace(/-/g, '/'));
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const formattedDate = rawDate.toLocaleDateString('es-ES', options);
+
+            // Strip HTML/Markdown tags for excerpt
+            const cleanText = post.texto
+                .replace(/<[^>]*>/g, '') // remove HTML tags
+                .replace(/[*#_`~\[\]]/g, '') // remove simple markdown characters
+                .substring(0, 120) + '...';
+
+            card.innerHTML = `
+                <div class="blog-card-img">
+                    <img src="${post.imagen_url}" alt="${post.titulo}" loading="lazy">
+                </div>
+                <div class="blog-card-body">
+                    <div class="blog-card-meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${formattedDate}</span>
+                    </div>
+                    <h3 class="blog-card-title">${post.titulo}</h3>
+                    <p class="blog-card-excerpt">${cleanText}</p>
+                    <div class="blog-card-footer">
+                        <div class="blog-card-author">
+                            <img src="${post.foto_autor_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&h=256&q=80'}" alt="${post.nombre_autor}" class="author-avatar">
+                            <span class="author-name">${post.nombre_autor}</span>
+                        </div>
+                        <span class="blog-read-more">Leer Más <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            `;
+
+            blogGrid.appendChild(card);
+        });
+
+        // Refresh reveal elements to capture newly loaded cards
+        refreshScrollReveal();
+    }
+
+    function refreshScrollReveal() {
+        const windowHeight = window.innerHeight;
+        const elementVisible = 150;
+
+        // Force a scroll reveal check on dynamic cards
+        const dynamicCards = document.querySelectorAll('.blog-card');
+        dynamicCards.forEach(card => {
+            card.classList.add('reveal');
+            const elementTop = card.getBoundingClientRect().top;
+            if (elementTop < windowHeight - elementVisible) {
+                card.classList.add('active');
+            }
+        });
+        
+        // Add to main scroll listener
+        window.addEventListener('scroll', () => {
+            dynamicCards.forEach(card => {
+                const elementTop = card.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    card.classList.add('active');
+                }
+            });
         });
     }
 });
