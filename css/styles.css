@@ -994,6 +994,7 @@ img {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .blog-card-author .author-name {
@@ -1127,6 +1128,7 @@ img {
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .reader-post-author-info {
