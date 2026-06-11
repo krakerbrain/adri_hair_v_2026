@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (blogGrid) {
         // Fetch posts.json
-        fetch('posts.json')
+        fetch('posts.json?t=' + new Date().getTime())
             .then(response => {
                 if (!response.ok) {
                     throw new Error('No se pudo cargar el archivo posts.json');

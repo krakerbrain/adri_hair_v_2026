@@ -108,7 +108,7 @@ function format_post_text($text)
         rel="stylesheet">
 
     <!-- ===== STYLES ===== -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=<?php echo filemtime('css/styles.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Custom style for post.php navbar to ensure high readability -->
@@ -333,7 +333,7 @@ function format_post_text($text)
     </div>
 
     <!-- Scripts -->
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=<?php echo filemtime('js/main.js'); ?>"></script>
 </body>
 
 </html>
