@@ -52,7 +52,12 @@ function format_date_es($date_str)
 // Parse markdown bold/italic & paragraphs helper
 function format_post_text($text)
 {
-    $paras = explode("\n\n", $text);
+    // Normalizar saltos de línea (eliminar \r y estandarizar a \n)
+    $text = str_replace("\r\n", "\n", $text);
+    $text = str_replace("\r", "\n", $text);
+
+    // Separar por dos o más saltos de línea (párrafos)
+    $paras = preg_split('/\n{2,}/', $text);
     $formatted = '';
 
     foreach ($paras as $para) {
@@ -60,8 +65,12 @@ function format_post_text($text)
         if (empty($para))
             continue;
 
+        // Reemplazos de Markdown (negrita y cursiva)
         $para = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $para);
         $para = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $para);
+
+        // Convertir saltos de línea simples dentro del párrafo a <br>
+        $para = nl2br($para);
 
         $formatted .= "<p>$para</p>\n";
     }
