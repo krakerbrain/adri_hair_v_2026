@@ -1,36 +1,191 @@
 // main.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Mobile Menu Toggle ---
+    // --- Mobile Menu Toggle & Fullscreen Drawer ---
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function openMenu() {
+        if (!navLinks) return;
+        navLinks.classList.add('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        if (!navLinks) return;
+        navLinks.classList.remove('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    }
 
     if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (navLinks.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+    }
+
+    if (menuCloseBtn) {
+        menuCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeMenu();
         });
     }
 
     // Close mobile menu when clicking a link
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
+            closeMenu();
         });
     });
 
-    // --- Hero Slider ---
-    const slides = document.querySelectorAll('.slide');
-    if (slides.length > 0) {
-        let currentSlide = 0;
-        
-        function nextSlide() {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
+    // Close mobile menu on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navLinks && navLinks.classList.contains('active')) {
+            closeMenu();
+        }
+    });
+
+    // --- Mobile Top Bar Carousel ---
+    const topBarItems = document.querySelectorAll('.top-bar-item');
+    const topBarPrevBtn = document.querySelector('.top-bar-prev');
+    const topBarNextBtn = document.querySelector('.top-bar-next');
+    const topBarWrapper = document.querySelector('.top-bar-carousel-wrapper');
+
+    if (topBarItems.length > 0) {
+        let currentTopBarIdx = 0;
+        let topBarTimer = null;
+
+        function showTopBarItem(newIndex, direction = 'next') {
+            if (window.innerWidth > 768) return;
+            const total = topBarItems.length;
+            const prevIndex = currentTopBarIdx;
+            currentTopBarIdx = (newIndex + total) % total;
+
+            topBarItems.forEach((item, i) => {
+                item.classList.remove('active', 'slide-prev');
+                if (i === currentTopBarIdx) {
+                    item.classList.add('active');
+                } else if (i === prevIndex && direction === 'next') {
+                    item.classList.add('slide-prev');
+                }
+            });
         }
 
-        // Change slide every 5 seconds
-        setInterval(nextSlide, 5000);
+        function startTopBarAutoplay() {
+            if (topBarTimer) clearInterval(topBarTimer);
+            topBarTimer = setInterval(() => {
+                if (window.innerWidth <= 768) {
+                    showTopBarItem(currentTopBarIdx + 1, 'next');
+                }
+            }, 3500);
+        }
+
+        if (topBarPrevBtn) {
+            topBarPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTopBarItem(currentTopBarIdx - 1, 'prev');
+                startTopBarAutoplay();
+            });
+        }
+
+        if (topBarNextBtn) {
+            topBarNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTopBarItem(currentTopBarIdx + 1, 'next');
+                startTopBarAutoplay();
+            });
+        }
+
+        // Swipe support on mobile top-bar
+        if (topBarWrapper) {
+            let startX = 0;
+            topBarWrapper.addEventListener('touchstart', (e) => {
+                startX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            topBarWrapper.addEventListener('touchend', (e) => {
+                const diff = startX - e.changedTouches[0].screenX;
+                if (Math.abs(diff) > 30) {
+                    if (diff > 0) {
+                        showTopBarItem(currentTopBarIdx + 1, 'next');
+                    } else {
+                        showTopBarItem(currentTopBarIdx - 1, 'prev');
+                    }
+                    startTopBarAutoplay();
+                }
+            }, { passive: true });
+        }
+
+        startTopBarAutoplay();
+    }
+
+    // --- Hero Slider ---
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.slider-dot');
+    const prevBtn = document.getElementById('slider-prev');
+    const nextBtn = document.getElementById('slider-next');
+
+    if (slides.length > 0) {
+        let currentSlide = 0;
+        let autoplayTimer = null;
+        let isPaused = false;
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            dots[currentSlide].setAttribute('aria-selected', 'false');
+
+            currentSlide = (index + slides.length) % slides.length;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            dots[currentSlide].setAttribute('aria-selected', 'true');
+        }
+
+        function startAutoplay() {
+            if (autoplayTimer) clearInterval(autoplayTimer);
+            autoplayTimer = setInterval(() => {
+                if (!isPaused) goToSlide(currentSlide + 1);
+            }, 5000);
+        }
+
+        // Arrow buttons
+        if (prevBtn) prevBtn.addEventListener('click', () => { goToSlide(currentSlide - 1); startAutoplay(); });
+        if (nextBtn) nextBtn.addEventListener('click', () => { goToSlide(currentSlide + 1); startAutoplay(); });
+
+        // Dot buttons
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => { goToSlide(i); startAutoplay(); });
+        });
+
+        // Pause on hover (desktop)
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            hero.addEventListener('mouseenter', () => { isPaused = true; });
+            hero.addEventListener('mouseleave', () => { isPaused = false; });
+        }
+
+        // Touch/swipe support (mobile)
+        let touchStartX = 0;
+        const heroEl = document.querySelector('.hero');
+        if (heroEl) {
+            heroEl.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+            heroEl.addEventListener('touchend', (e) => {
+                const diff = touchStartX - e.changedTouches[0].screenX;
+                if (Math.abs(diff) > 50) {
+                    goToSlide(diff > 0 ? currentSlide + 1 : currentSlide - 1);
+                    startAutoplay();
+                }
+            }, { passive: true });
+        }
+
+        startAutoplay();
     }
 
     // --- Scroll Reveal, Sticky Navbar & Scrollspy ---
@@ -75,6 +230,20 @@ document.addEventListener('DOMContentLoaded', () => {
             current = ''; // "Inicio" shouldn't necessarily trigger an ID unless Hero has one. 
         }
 
+        // Dynamic Browser Tab Title based on active section (Landing page only)
+        if (!document.body.classList.contains('inner-page')) {
+            const sectionTitles = {
+                'servicios': 'Servicios | Adri Hair Style',
+                'conoceme': 'Conóceme | Adri Hair Style',
+                'blog': 'Blog & Novedades | Adri Hair Style'
+            };
+            const originalTitle = 'Adri Hair Style | Alisados Naturales sin Formol, Balayage y Coloración en Viña del Mar';
+            const newTitle = sectionTitles[current] || originalTitle;
+            if (document.title !== newTitle) {
+                document.title = newTitle;
+            }
+        }
+
         navItems.forEach(a => {
             a.classList.remove('active');
             const href = a.getAttribute('href');
@@ -86,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let isCurrent = (hash === current && current !== '');
             
             // If we are at the top and the hash is empty, or the link is just "#"
-            if (current === '' && (href === '#' || href === 'index.html#')) {
+            if (current === '' && (href === '#' || href === 'index.html#' || href === 'index.php#' || href === 'index.php')) {
                 isCurrent = true;
             }
             
@@ -105,29 +274,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // Trigger once on load
     handleScroll();
 
-    // --- 3D Card Flip ---
-    const flipBtns = document.querySelectorAll('.flip-btn');
-    const flipBackBtns = document.querySelectorAll('.flip-btn-back');
+    // --- Mobile Center-Scroll Animation for Service Cards ---
+    function setupMobileCenterScroll() {
+        const serviceCards = document.querySelectorAll('.service-card');
+        if (serviceCards.length === 0) return;
 
-    flipBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const cardInner = btn.closest('.service-card-inner');
-            if (cardInner) {
-                cardInner.classList.add('flipped');
+        function checkCardsInCenter() {
+            if (window.innerWidth > 768) {
+                serviceCards.forEach(card => card.classList.remove('in-center'));
+                return;
             }
-        });
-    });
 
-    flipBackBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const cardInner = btn.closest('.service-card-inner');
-            if (cardInner) {
-                cardInner.classList.remove('flipped');
-            }
-        });
-    });
+            const viewportHeight = window.innerHeight;
+            const centerTopThreshold = viewportHeight * 0.18; // Top 18% boundary
+            const centerBottomThreshold = viewportHeight * 0.82; // Bottom 82% boundary
+
+            serviceCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardMiddle = rect.top + rect.height / 2;
+
+                // Card's vertical center point is in the middle of screen
+                if (cardMiddle >= centerTopThreshold && cardMiddle <= centerBottomThreshold) {
+                    card.classList.add('in-center');
+                } else {
+                    card.classList.remove('in-center');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkCardsInCenter, { passive: true });
+        window.addEventListener('resize', checkCardsInCenter, { passive: true });
+        // Initial check
+        checkCardsInCenter();
+    }
+
+    setupMobileCenterScroll();
 
     // --- WhatsApp Popup Toggle ---
     const waBtn = document.querySelector('.whatsapp-float-btn');
@@ -253,4 +434,65 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // --- Service Image Lightbox (Mobile) ---
+    const lightboxOverlay = document.getElementById('service-lightbox');
+    const lightboxImg     = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
+
+    function openLightbox(imgSrc, caption, altText) {
+        lightboxImg.src = imgSrc;
+        lightboxImg.alt = altText || caption;
+        lightboxCaption.textContent = caption || '';
+        lightboxOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightboxOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+        // Clear src after transition
+        setTimeout(() => {
+            if (!lightboxOverlay.classList.contains('open')) {
+                lightboxImg.src = '';
+            }
+        }, 320);
+    }
+
+    // Enable image lightbox popup on mobile click
+    document.querySelectorAll('.is-lightbox-trigger').forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                // Ignore if clicked on a button or link inside
+                if (e.target.closest('a') || e.target.closest('button')) return;
+                const imgSrc = trigger.dataset.img || trigger.querySelector('img')?.src;
+                const caption = trigger.dataset.caption || '';
+                const altText = trigger.querySelector('img')?.alt || '';
+                if (imgSrc) {
+                    openLightbox(imgSrc, caption, altText);
+                }
+            }
+        });
+    });
+
+    if (lightboxCloseBtn) {
+        lightboxCloseBtn.addEventListener('click', closeLightbox);
+    }
+
+    if (lightboxOverlay) {
+        // Close on backdrop click (but not on image click)
+        lightboxOverlay.addEventListener('click', (e) => {
+            if (e.target === lightboxOverlay || e.target === lightboxImg) {
+                closeLightbox();
+            }
+        });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightboxOverlay && lightboxOverlay.classList.contains('open')) {
+            closeLightbox();
+        }
+    });
 });
