@@ -1,0 +1,31 @@
+# ===================================
+# Herramientas y asistentes de IA
+# ===================================
+.impeccable/
+.claude/
+.cursor/
+.codex/
+prompt.md
+PRODUCT.md
+
+# ===================================
+# Editores e IDEs
+# ===================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ===================================
+# Sistema Operativo
+# ===================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===================================
+# Logs y Temporales
+# ===================================
+*.log
+error_log
+*.tmp
