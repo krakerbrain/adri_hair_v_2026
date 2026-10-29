@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAgOpen = agWindow.classList.contains('is-open');
         waContainer.classList.toggle('agendarium-open', isAgOpen);
         if (bookingBtnText) {
-            bookingBtnText.textContent = isAgOpen ? 'Cerrar Citas' : 'Agendar Cita';
+            bookingBtnText.textContent = isAgOpen ? 'Cerrar Citas' : 'Reserva Online';
         }
         return isAgOpen;
     }
