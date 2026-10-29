@@ -44,11 +44,11 @@ $js_version = file_exists(__DIR__ . '/../js/main.js') ? filemtime(__DIR__ . '/..
         </div>
     </footer>
 
-    <!-- WhatsApp Floating Button & Popup -->
-    <div class="whatsapp-container">
-        <!-- Popup -->
-        <div class="whatsapp-popup">
-            <a href="https://wa.me/56952442965" target="_blank" class="whatsapp-popup-content">
+    <!-- Floating Chat & Booking Dock Bar -->
+    <div class="whatsapp-container" id="chat-hub-container">
+        <!-- WhatsApp Popup Card -->
+        <div class="whatsapp-popup" id="chat-hub-popup" role="dialog" aria-label="Chat de WhatsApp">
+            <a href="https://wa.me/56952442965" target="_blank" rel="noopener noreferrer" class="whatsapp-popup-content">
                 <img src="img/bio_Adri_editada_web_optimo.jpg" alt="Adri">
                 <div class="whatsapp-text">
                     <strong>Chatea con Adri</strong>
@@ -56,10 +56,19 @@ $js_version = file_exists(__DIR__ . '/../js/main.js') ? filemtime(__DIR__ . '/..
                 </div>
             </a>
         </div>
-        <!-- Button -->
-        <button class="whatsapp-float-btn" aria-label="Abrir chat de WhatsApp">
-            <i class="fa-brands fa-whatsapp"></i>
-        </button>
+
+        <!-- Floating Dock Bar: [ Agendar Cita ] + [ WhatsApp ] -->
+        <div class="chat-dock-bar">
+            <button type="button" class="chat-dock-booking-btn" id="open-agendarium-chat" aria-label="Abrir asistente para agendar cita">
+                <i class="fa-solid fa-calendar-check chat-dock-icon-default" aria-hidden="true"></i>
+                <i class="fa-solid fa-xmark chat-dock-icon-close" aria-hidden="true"></i>
+                <span class="chat-dock-booking-text">Agendar Cita</span>
+            </button>
+
+            <button type="button" class="whatsapp-float-btn" id="chat-hub-btn" aria-label="Abrir chat de WhatsApp" aria-expanded="false">
+                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -68,7 +77,7 @@ $js_version = file_exists(__DIR__ . '/../js/main.js') ? filemtime(__DIR__ . '/..
       src="https://chat.agendarium.com/embed.js" 
       data-company-id="13" 
       data-title="Adri Hair Style" 
-      data-color="#4f46e5">
+      data-color="#ff00a0">
     </script>
 
     <!-- Service Image Lightbox Overlay -->
