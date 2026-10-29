@@ -64,6 +64,12 @@ $js_version = file_exists(__DIR__ . '/../js/main.js') ? filemtime(__DIR__ . '/..
 
     <!-- Scripts -->
     <script src="js/main.js?v=<?php echo $js_version; ?>"></script>
+    <script 
+      src="https://chat.agendarium.com/embed.js" 
+      data-company-id="13" 
+      data-title="Adri Hair Style" 
+      data-color="#4f46e5">
+    </script>
 
     <!-- Service Image Lightbox Overlay -->
     <div class="lightbox-overlay" id="service-lightbox" role="dialog" aria-modal="true" aria-label="Ver imagen del servicio">
