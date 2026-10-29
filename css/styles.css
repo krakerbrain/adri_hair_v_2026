@@ -1978,3 +1978,137 @@ body.inner-page .navbar.inner-navbar .logo img {
 body.inner-page main#main-content {
   margin-top: 90px;
 }
+
+
+/* ===========================
+   Floating Chat & Booking Dock Bar (Agendarium + WhatsApp)
+   =========================== */
+#agendarium-chat-launcher {
+  display: none !important;
+}
+
+.whatsapp-container {
+  bottom: 20px;
+  right: 20px;
+  z-index: 2147483640;
+  gap: 10px;
+}
+
+/* Floating capsule bar holding both buttons side by side */
+.chat-dock-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 6px 6px 8px;
+  border-radius: 999px;
+  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+/* Left Pill Button: Agendar Cita */
+.chat-dock-booking-btn {
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-hover) 100%);
+  color: var(--white);
+  border: none;
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow: 0 4px 15px rgba(255, 0, 160, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.chat-dock-booking-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 160, 0.5);
+}
+
+.chat-dock-booking-btn i {
+  font-size: 1rem;
+}
+
+.chat-dock-icon-close {
+  display: none;
+}
+
+.whatsapp-container.agendarium-open .chat-dock-icon-default {
+  display: none;
+}
+
+.whatsapp-container.agendarium-open .chat-dock-icon-close {
+  display: inline-block;
+}
+
+/* Right Circular Button: WhatsApp */
+.whatsapp-float-btn {
+  width: 48px;
+  height: 48px;
+  background-color: #25d366;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.42);
+  font-size: 1.55rem;
+  flex-shrink: 0;
+}
+
+.whatsapp-float-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float-btn::before {
+  width: 48px;
+  height: 48px;
+  background: rgba(37, 211, 102, 0.25);
+}
+
+.whatsapp-container.is-open .whatsapp-float-btn::before,
+.whatsapp-container.agendarium-open .whatsapp-float-btn::before {
+  display: none;
+}
+
+/* Align WhatsApp popup arrow with the right circular button */
+.whatsapp-popup::after {
+  right: 20px;
+}
+
+@media (max-width: 640px) {
+  .whatsapp-container {
+    bottom: 14px;
+    right: 14px;
+  }
+
+  .chat-dock-bar {
+    gap: 8px;
+    padding: 5px 5px 5px 7px;
+  }
+
+  .chat-dock-booking-btn {
+    height: 44px;
+    padding: 0 15px;
+    font-size: 0.82rem;
+    gap: 7px;
+  }
+
+  .whatsapp-float-btn,
+  .whatsapp-float-btn::before {
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+
+  /* When Agendarium bottom-sheet is open on mobile, hide floating dock so it never overlaps */
+  .whatsapp-container.agendarium-open {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

@@ -310,20 +310,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupMobileCenterScroll();
 
-    // --- WhatsApp Popup Toggle ---
+    // --- Floating Chat & Booking Dock Bar (Agendarium + WhatsApp) ---
+    const waContainer = document.querySelector('.whatsapp-container');
     const waBtn = document.querySelector('.whatsapp-float-btn');
     const waPopup = document.querySelector('.whatsapp-popup');
+    const openAgendariumBtn = document.getElementById('open-agendarium-chat');
+    const bookingBtnText = openAgendariumBtn ? openAgendariumBtn.querySelector('.chat-dock-booking-text') : null;
 
-    if (waBtn && waPopup) {
+    function setWaPopupOpen(isOpen) {
+        if (!waPopup || !waContainer || !waBtn) return;
+        waPopup.classList.toggle('open', isOpen);
+        waContainer.classList.toggle('is-open', isOpen);
+        waBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    function syncAgendariumState() {
+        const agWindow = document.getElementById('agendarium-chat-window');
+        if (!agWindow || !waContainer) return false;
+        const isAgOpen = agWindow.classList.contains('is-open');
+        waContainer.classList.toggle('agendarium-open', isAgOpen);
+        if (bookingBtnText) {
+            bookingBtnText.textContent = isAgOpen ? 'Cerrar Citas' : 'Agendar Cita';
+        }
+        return isAgOpen;
+    }
+
+    if (waBtn && waPopup && waContainer) {
+        // Right button: WhatsApp toggle
         waBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            waPopup.classList.toggle('open');
+            const agWindow = document.getElementById('agendarium-chat-window');
+            const agBtn = document.getElementById('agendarium-chat-btn');
+
+            // If Agendarium chat window is open, close it first so they don't overlap
+            if (agWindow && agWindow.classList.contains('is-open') && agBtn) {
+                agBtn.click();
+                syncAgendariumState();
+            }
+
+            const willOpen = !waPopup.classList.contains('open');
+            setWaPopupOpen(willOpen);
         });
 
-        // Close popup when clicking outside
+        // Left pill button: Agendarium Booking Chat toggle
+        if (openAgendariumBtn) {
+            openAgendariumBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setWaPopupOpen(false);
+                const agBtn = document.getElementById('agendarium-chat-btn');
+                if (agBtn) {
+                    agBtn.click();
+                }
+                syncAgendariumState();
+            });
+        }
+
+        // Observe Agendarium window open/close state (including close from inside iframe)
+        const attachAgendariumObserver = () => {
+            const agWindow = document.getElementById('agendarium-chat-window');
+            if (!agWindow) return false;
+            const observer = new MutationObserver(() => {
+                syncAgendariumState();
+            });
+            observer.observe(agWindow, { attributes: true, attributeFilter: ['class'] });
+            syncAgendariumState();
+            return true;
+        };
+
+        if (!attachAgendariumObserver()) {
+            const bodyObserver = new MutationObserver(() => {
+                if (attachAgendariumObserver()) {
+                    bodyObserver.disconnect();
+                }
+            });
+            bodyObserver.observe(document.body, { childList: true });
+        }
+
+        // Close WhatsApp popup when clicking outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.whatsapp-container')) {
-                waPopup.classList.remove('open');
+                setWaPopupOpen(false);
+            }
+        });
+
+        // Close WhatsApp popup on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && waPopup.classList.contains('open')) {
+                setWaPopupOpen(false);
             }
         });
     }
